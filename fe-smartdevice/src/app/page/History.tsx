@@ -4,6 +4,14 @@ import { Paging } from "../comp/Paging";
 import { DeviceHistory } from "../model/DeviceHistory";
 import { formatDate } from "../util/DateTimeFormat";
 
+type SearchModel = {
+  keyword: string;
+  time: string;
+  sortBy: string;
+  sortOrder: string;
+  timer: number;
+};
+
 export const History = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [data, setData] = useState<DeviceHistory[]>([
@@ -16,15 +24,57 @@ export const History = () => {
     { id: 7, name: "Device 7", action: "Turn on", time: new Date().toString() },
     { id: 8, name: "Device 8", action: "Turn on", time: new Date().toString() },
     { id: 9, name: "Device 9", action: "Turn on", time: new Date().toString() },
-    { id: 10, name: "Device 6", action: "Turn on", time: new Date().toString() },
-    { id: 11, name: "Device 7", action: "Turn on", time: new Date().toString() },
-    { id: 12, name: "Device 8", action: "Turn on", time: new Date().toString() },
-    { id: 13, name: "Device 9", action: "Turn on", time: new Date().toString() },
-    { id: 14, name: "Device 6", action: "Turn on", time: new Date().toString() },
+    {
+      id: 10,
+      name: "Device 6",
+      action: "Turn on",
+      time: new Date().toString(),
+    },
+    {
+      id: 11,
+      name: "Device 7",
+      action: "Turn on",
+      time: new Date().toString(),
+    },
+    {
+      id: 12,
+      name: "Device 8",
+      action: "Turn on",
+      time: new Date().toString(),
+    },
+    {
+      id: 13,
+      name: "Device 9",
+      action: "Turn on",
+      time: new Date().toString(),
+    },
+    {
+      id: 14,
+      name: "Device 6",
+      action: "Turn on",
+      time: new Date().toString(),
+    },
   ]);
-
+  const [searchModel, setSearchModel] = useState<SearchModel>({
+    keyword: "",
+    time: "",
+    sortBy: "",
+    sortOrder: "",
+    timer: 0
+  });
   const onClickBtn = () => {
     console.log("Click");
+    console.log(searchModel);
+  };
+
+  const onChangeSearchInput = (e: any) => {
+    console.log(e.target.value);
+    setSearchModel({ ...searchModel, keyword: e.target.value });
+  };
+  
+  const onChangeDateInput = (e: any) => {
+    console.log(e.target.value);
+    setSearchModel({ ...searchModel, time: e.target.value });
   };
 
   const onClickNextPage = () => {
@@ -46,7 +96,12 @@ export const History = () => {
         <div className="col-12">
           <h3 className="mt-2">Lịch sử hoạt động</h3>
           <div className="mt-3">
-            <SearchBox onClickBtn={onClickBtn} />
+            <SearchBox
+              searchModel={searchModel}
+              onChangeSearchInput={onChangeSearchInput}
+              onChangeDateInput={onChangeDateInput}
+              onClickBtn={onClickBtn}
+            />
           </div>
           {data.length === 0 ? (
             <div className="p-2 my-3">

@@ -5,7 +5,8 @@ export const formatDate = (date: string) => {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false,
+    second: "2-digit",
+    hour12: true,
   })
     .format(new Date(date))
     .replace(",", "");
