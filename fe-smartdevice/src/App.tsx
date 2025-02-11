@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Suspense} from 'react';
 import './App.css';
+import { Navigate, useRoutes } from 'react-router-dom';
+import { Routers } from './app/router/Routers';
+
+export const spinner = (
+  <div className="progress-spinner text-center ">
+    <div className="spinner-border text-primary"></div>
+  </div>
+);
 
 function App() {
+
+  let router = useRoutes([
+    { path: 'not-permission',element: <div>403</div> }, //403
+    { path: '/', element: <Navigate to="/dashboard" replace /> },
+    Routers,
+    { path: 'err-network',  element:  <div>500</div> }, //500
+    { path: '*',  element:  <div>404</div> }, //404
+  ]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Suspense fallback={spinner}>{router}</Suspense>
     </div>
   );
 }
