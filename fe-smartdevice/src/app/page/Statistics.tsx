@@ -131,7 +131,7 @@ export const Statistics = () => {
     console.log(e.target.value);
     setSearchModel({ ...searchModel, time: e.target.value });
   };
-  const onClickBtn = () => {
+  const onClickBtnSearch = () => {
     console.log("Click");
     console.log(searchModel);
   };
@@ -144,6 +144,18 @@ export const Statistics = () => {
   const onClickPrePage = () => {
     console.log("Pre Page");
     setPageNumber(pageNumber - 1);
+  };
+
+  const handleSort = (sortBy: string) => {
+    console.log("Sort by: ", sortBy);
+  
+    setSearchModel((prev) => ({
+      ...prev,
+      sortBy: sortBy,
+      sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+    }));
+
+    console.log(searchModel)
   };
 
   return (
@@ -159,7 +171,7 @@ export const Statistics = () => {
               searchModel={searchModel}
               onChangeSearchInput={onChangeSearchInput}
               onChangeDateInput={onChangeDateInput}
-              onClickBtn={onClickBtn}
+              onClickBtnSearch={onClickBtnSearch}
             />
           </div>
           {data.length === 0 ? (
@@ -174,11 +186,36 @@ export const Statistics = () => {
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Độ ẩm (%)</th>
-                    <th>Nhiệt độ (°C)</th>
-                    <th>Mức ánh sáng (lux)</th>
-                    <th>Thời gian</th>
+                    <th
+                      onClick={() => handleSort('id')}
+                      className="cursor-pointer"
+                    >
+                      ID
+                    </th>
+                    <th
+                      onClick={() => handleSort('humidity')}
+                      className="cursor-pointer"
+                    >
+                      Độ ẩm (%)
+                    </th>
+                    <th
+                      onClick={() => handleSort('temperature')}
+                      className="cursor-pointer"
+                    >
+                      Nhiệt độ (°C)
+                    </th>
+                    <th
+                      onClick={() => handleSort('light_level')}
+                      className="cursor-pointer"
+                    >
+                      Mức ánh sáng (lux)
+                    </th>
+                    <th
+                      onClick={() => handleSort('time')}
+                      className="cursor-pointer"
+                    >
+                      Thời gian
+                    </th>
                   </tr>
                 </thead>
                 <tbody>

@@ -18,6 +18,40 @@ a.active {
 }
 
 a.nav-link:hover,
-button.btn-custom:hover {
+button.btn-custom:hover,
+button.btn-action:hover {
   background-color: #a6fff6 !important;
+  color: #000000 !important;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+div.light-box{
+  background-color: #FFD700;
+}
+div.humidity-box{
+  background-color: #0D6EFD;
+}
+div.temperature-box {
+  background-color: #FF1313;
+}
+
+.chart-container{
+  height: 600px;
+}
+
+button.btn-action {
+  background-color: #000000;
+  color: white;
+  width: 90px;
+  height: 50px;
+  border:  none;
+  border-radius: 10px;
+  font-size: 24px;
+}
+
+button.btn-action.active{
+  background-color: #0D6EFD;
 }

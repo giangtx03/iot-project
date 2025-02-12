@@ -1,5 +1,18 @@
+import { useEffect, useState } from "react";
 
 export const SearchBox = (props: any) => {
+
+  const [maxDate, setMaxDate] = useState("");
+
+  useEffect(() => {
+    const now = new Date();
+    const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+
+    setMaxDate(localDate);
+  }, []);
+
   return (
     <div className="d-flex align-items-center">
       <div className="d-flex gap-2" style={{ width: "40%" }}>
@@ -16,7 +29,7 @@ export const SearchBox = (props: any) => {
           }}
         />
 
-        <button className="btn btn-primary w-25" onClick={props.onClickBtn}>
+        <button className="btn btn-primary w-25" onClick={props.onClickBtnSearch}>
           Tìm kiếm
         </button>
       </div>
@@ -25,6 +38,7 @@ export const SearchBox = (props: any) => {
           value={props.searchModel.time}
           onChange={props.onChangeDateInput}
           type="datetime-local"
+          max={maxDate}
           className="form-control w-auto"
           placeholder="Chọn ngày giờ"
         />

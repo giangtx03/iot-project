@@ -62,29 +62,32 @@ export const History = () => {
     sortOrder: "",
     timer: 0
   });
-  const onClickBtn = () => {
-    console.log("Click");
-    console.log(searchModel);
+  const onClickBtnSearch = () => {
+    setSearchModel({ ...searchModel, timer: Date.now() });
   };
 
   const onChangeSearchInput = (e: any) => {
-    console.log(e.target.value);
     setSearchModel({ ...searchModel, keyword: e.target.value });
   };
   
   const onChangeDateInput = (e: any) => {
-    console.log(e.target.value);
     setSearchModel({ ...searchModel, time: e.target.value });
   };
 
   const onClickNextPage = () => {
-    console.log("Next Page");
     setPageNumber(pageNumber + 1);
   };
 
   const onClickPrePage = () => {
-    console.log("Pre Page");
     setPageNumber(pageNumber - 1);
+  };
+
+  const handleSort = (sortBy: string) => {
+    setSearchModel((prev) => ({
+      ...prev,
+      sortBy: sortBy,
+      sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+    }));
   };
 
   return (
@@ -100,7 +103,7 @@ export const History = () => {
               searchModel={searchModel}
               onChangeSearchInput={onChangeSearchInput}
               onChangeDateInput={onChangeDateInput}
-              onClickBtn={onClickBtn}
+              onClickBtnSearch={onClickBtnSearch}
             />
           </div>
           {data.length === 0 ? (
@@ -115,10 +118,14 @@ export const History = () => {
               <table className="table table-bordered text-center">
                 <thead>
                   <tr>
-                    <th>ID</th>
-                    <th>Tên thiết bị</th>
-                    <th>Hành động</th>
-                    <th>Thời gian</th>
+                    <th onClick={() => handleSort('id')}
+                      className="cursor-pointer">ID</th>
+                    <th onClick={() => handleSort('name')}
+                      className="cursor-pointer">Tên thiết bị</th>
+                    <th onClick={() => handleSort('action')}
+                      className="cursor-pointer">Hành động</th>
+                    <th onClick={() => handleSort('time')}
+                      className="cursor-pointer">Thời gian</th>
                   </tr>
                 </thead>
                 <tbody>
