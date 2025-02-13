@@ -1,19 +1,5 @@
-import { useEffect, useState } from "react";
-
 export const SearchBox = (props: any) => {
-
-  const [maxDate, setMaxDate] = useState("");
-
-  useEffect(() => {
-    const now = new Date();
-    const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-      .toISOString()
-      .slice(0, 16);
-
-    setMaxDate(localDate);
-  }, []);
-
-  return (
+    return (
     <div className="d-flex align-items-center">
       <div className="d-flex gap-2" style={{ width: "40%" }}>
         <input
@@ -28,20 +14,26 @@ export const SearchBox = (props: any) => {
             }
           }}
         />
-
-        <button className="btn btn-primary w-25" onClick={props.onClickBtnSearch}>
+        {props.hideSelect ? null : (
+          <div>
+            <select value={props.searchModel.type} onChange={props.onChangeType} className="form-select w-auto border-0" name="type">
+              <option value="all">
+                Tất cả
+              </option>
+              <option value="id">ID</option>
+              <option value="humidity">Độ ẩm</option>
+              <option value="temperature">Nhiệt độ</option>
+              <option value="light">Ánh sáng</option>
+              <option value="time">Thời gian</option>
+            </select>
+          </div>
+        )}
+        <button
+          className="btn btn-primary w-25"
+          onClick={props.onClickBtnSearch}
+        >
           Tìm kiếm
         </button>
-      </div>
-      <div className="ms-auto">
-        <input
-          value={props.searchModel.time}
-          onChange={props.onChangeDateInput}
-          type="datetime-local"
-          max={maxDate}
-          className="form-control w-auto"
-          placeholder="Chọn ngày giờ"
-        />
       </div>
     </div>
   );

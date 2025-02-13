@@ -32,22 +32,36 @@ export const Paging = (props: any) => {
       <p className="fs-5 m-0">Tổng trang: {props.totalPage}</p>
 
       <div className="d-flex align-items-center gap-2">
-        <button style={stylePrePage} className="btn-custom" onClick={props.onClickPrePage}>
-          Trước
-        </button>
-        <div
-          className="d-flex justify-content-center align-items-center"
-          style={stylePageNumber}
-        >
-          <p className="mb-0 fs-5 fw-bold">{props.pageNumber}</p>
+        <div >
+          <select className="form-select" value={props.pageSize} onChange={props.onChangePageSize} name="pageSize">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+          </select>
         </div>
-        <button
-          style={styleNextPage}
-          className="btn-custom"
-          onClick={props.onClickNextPage}
-        >
-          Sau
-        </button>
+        <div className="d-flex align-items-center gap-2">
+          <button
+            style={stylePrePage}
+            className="btn-custom"
+            onClick={props.onClickPrePage}
+          >
+            Trước
+          </button>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={stylePageNumber}
+          >
+            <p className="mb-0 fs-5 fw-bold">{props.pageNumber}</p>
+          </div>
+          <button
+            style={styleNextPage}
+            className="btn-custom"
+            onClick={props.onClickNextPage}
+          >
+            Sau
+          </button>
+        </div>
       </div>
     </div>
   );

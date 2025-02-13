@@ -3,6 +3,8 @@ import './App.css';
 import { Navigate, useRoutes } from 'react-router-dom';
 import { Routers } from './app/router/Routers';
 
+import './asset/css/spinner.css';
+
 export const spinner = (
   <div className="progress-spinner text-center ">
     <div className="spinner-border text-primary"></div>

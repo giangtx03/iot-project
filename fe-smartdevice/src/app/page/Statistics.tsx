@@ -3,17 +3,20 @@ import { SearchBox } from "../comp/SearchBox";
 import { Paging } from "../comp/Paging";
 import { SensorData } from "../model/SensorData";
 import { formatDate } from "../util/DateTimeFormat";
+import { FaAngleDown, FaAngleUp  } from "react-icons/fa";
 
 type SearchModel = {
   keyword: string;
   time: string;
   sortBy: string;
   sortOrder: string;
+  type: string;
+  pageSize: number;
+  pageNumber: number;
   timer: number;
 };
 
 export const Statistics = () => {
-  const [pageNumber, setPageNumber] = useState(1);
   const [data, setData] = useState<SensorData[]>([
     {
       id: 1,
@@ -117,8 +120,11 @@ export const Statistics = () => {
   const [searchModel, setSearchModel] = useState<SearchModel>({
     keyword: "",
     time: "",
-    sortBy: "",
-    sortOrder: "",
+    sortBy: "id",
+    sortOrder: "asc",
+    type: "all",
+    pageSize: 10,
+    pageNumber: 1,
     timer: 0,
   });
 
@@ -127,35 +133,45 @@ export const Statistics = () => {
     setSearchModel({ ...searchModel, keyword: e.target.value });
   };
 
-  const onChangeDateInput = (e: any) => {
-    console.log(e.target.value);
-    setSearchModel({ ...searchModel, time: e.target.value });
+  const onChangePageSize = (e: any) => {
+    setSearchModel({ ...searchModel, pageSize: e.target.value, timer: Date.now() });
+    console.log(e.target.value)
   };
+
+  const onChangeType = (e: any) => {
+    setSearchModel({ ...searchModel, type: e.target.value, timer: Date.now() });
+    console.log(e.target.value)
+  };
+
   const onClickBtnSearch = () => {
     console.log("Click");
     console.log(searchModel);
   };
 
   const onClickNextPage = () => {
-    console.log("Next Page");
-    setPageNumber(pageNumber + 1);
+    setSearchModel((prev) => ({
+      ...prev,
+      pageNumber: prev.pageNumber + 1,
+      timer: Date.now(),
+    }));
   };
 
   const onClickPrePage = () => {
-    console.log("Pre Page");
-    setPageNumber(pageNumber - 1);
+    setSearchModel((prev) => ({
+      ...prev,
+      pageNumber: prev.pageNumber - 1,
+      timer: Date.now(),
+    }));
   };
 
   const handleSort = (sortBy: string) => {
-    console.log("Sort by: ", sortBy);
-  
     setSearchModel((prev) => ({
       ...prev,
       sortBy: sortBy,
       sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
+      timer: Date.now(),
     }));
 
-    console.log(searchModel)
   };
 
   return (
@@ -170,8 +186,9 @@ export const Statistics = () => {
             <SearchBox
               searchModel={searchModel}
               onChangeSearchInput={onChangeSearchInput}
-              onChangeDateInput={onChangeDateInput}
               onClickBtnSearch={onClickBtnSearch}
+              onChangeType={onChangeType}
+              hideSelect={false}
             />
           </div>
           {data.length === 0 ? (
@@ -183,58 +200,62 @@ export const Statistics = () => {
               style={{ backgroundColor: "#FFFFFF" }}
               className="p-2 my-3 rounded"
             >
-              <table className="table table-bordered text-center">
-                <thead>
-                  <tr>
-                    <th
-                      onClick={() => handleSort('id')}
-                      className="cursor-pointer"
-                    >
-                      ID
-                    </th>
-                    <th
-                      onClick={() => handleSort('humidity')}
-                      className="cursor-pointer"
-                    >
-                      Độ ẩm (%)
-                    </th>
-                    <th
-                      onClick={() => handleSort('temperature')}
-                      className="cursor-pointer"
-                    >
-                      Nhiệt độ (°C)
-                    </th>
-                    <th
-                      onClick={() => handleSort('light_level')}
-                      className="cursor-pointer"
-                    >
-                      Mức ánh sáng (lux)
-                    </th>
-                    <th
-                      onClick={() => handleSort('time')}
-                      className="cursor-pointer"
-                    >
-                      Thời gian
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {data.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.id}</td>
-                      <td>{item.humidity}</td>
-                      <td>{item.temperature}</td>
-                      <td>{item.light_level}</td>
-                      <td>{formatDate(item.time)}</td>
+              <div className="mb-2" style={{ height: "650px", overflowY: "auto" }}>
+                <table className="table table-bordered text-center">
+                  <thead style={{ position: "sticky", top: 0, zIndex: 2 }}>
+                    <tr>
+                      <th
+                        onClick={() => handleSort("id")}
+                        className="cursor-pointer"
+                      >
+                        ID {searchModel.sortBy === "id" ? (searchModel.sortOrder === 'asc' ? <FaAngleUp /> : <FaAngleDown />)  : null}
+                      </th>
+                      <th
+                        onClick={() => handleSort("humidity")}
+                        className="cursor-pointer"
+                      >
+                        Độ ẩm (%) {searchModel.sortBy === "humidity" ? (searchModel.sortOrder === 'asc' ? <FaAngleUp /> : <FaAngleDown />)  : null}
+                      </th>
+                      <th
+                        onClick={() => handleSort("temperature")}
+                        className="cursor-pointer"
+                      >
+                        Nhiệt độ (°C) {searchModel.sortBy === "temperature" ? (searchModel.sortOrder === 'asc' ? <FaAngleUp /> : <FaAngleDown />)  : null}
+                      </th>
+                      <th
+                        onClick={() => handleSort("light_level")}
+                        className="cursor-pointer"
+                      >
+                        Mức ánh sáng (lux) {searchModel.sortBy === "light_level" ? (searchModel.sortOrder === 'asc' ? <FaAngleUp /> : <FaAngleDown />)  : null}
+                      </th>
+                      <th
+                        onClick={() => handleSort("time")}
+                        className="cursor-pointer"
+                      >
+                        Thời gian {searchModel.sortBy === "time" ? (searchModel.sortOrder === 'asc' ? <FaAngleUp /> : <FaAngleDown />)  : null}
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {data.map((item) => (
+                      <tr key={item.id}>
+                        <td>{item.id}</td>
+                        <td>{item.humidity}</td>
+                        <td>{item.temperature}</td>
+                        <td>{item.light_level}</td>
+                        <td>{formatDate(item.time)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
               <Paging
-                pageNumber={pageNumber}
+                pageNumber={searchModel.pageNumber}
                 totalPage={10}
                 onClickNextPage={onClickNextPage}
                 onClickPrePage={onClickPrePage}
+                onChangePageSize={onChangePageSize}
+                pageSize={searchModel.pageSize}
               />
             </div>
           )}
