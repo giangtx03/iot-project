@@ -7,7 +7,6 @@ import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
 type SearchModel = {
   keyword: string;
-  time: string;
   sortBy: string;
   sortOrder: string;
   pageSize: number;
@@ -89,7 +88,6 @@ export const History = () => {
   ]);
   const [searchModel, setSearchModel] = useState<SearchModel>({
     keyword: "",
-    time: "",
     sortBy: "id",
     sortOrder: "asc",
     pageSize: 10,
