@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SearchBox } from "../comp/SearchBox";
 import { Paging } from "../comp/Paging";
 import { DeviceHistory } from "../model/DeviceHistory";
-import { formatDate } from "../util/DateTimeFormat";
+import { formatDate, translateDeviceName } from "../util/AppUtil";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { useAppDispatch } from "../store/hooks";
+import { showOrHideSpinner } from "../reducer/SpinnerSlice";
+import { DeviceHistoryService } from "../service/DeviceHistoryService";
 
 type SearchModel = {
   keyword: string;
@@ -15,85 +18,111 @@ type SearchModel = {
 };
 
 export const History = () => {
+  const dispatch = useAppDispatch();
   const [data, setData] = useState<DeviceHistory[]>([
-    { id: 1, name: "Device 1", action: "Turn on", time: new Date().toString() },
-    { id: 2, name: "Device 2", action: "Turn on", time: new Date().toString() },
-    { id: 3, name: "Device 3", action: "Turn on", time: new Date().toString() },
-    { id: 4, name: "Device 4", action: "Turn on", time: new Date().toString() },
-    { id: 5, name: "Device 5", action: "Turn on", time: new Date().toString() },
-    { id: 6, name: "Device 6", action: "Turn on", time: new Date().toString() },
-    { id: 7, name: "Device 7", action: "Turn on", time: new Date().toString() },
-    { id: 8, name: "Device 8", action: "Turn on", time: new Date().toString() },
-    { id: 9, name: "Device 9", action: "Turn on", time: new Date().toString() },
-    {
-      id: 10,
-      name: "Device 6",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 11,
-      name: "Device 7",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 12,
-      name: "Device 8",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 13,
-      name: "Device 9",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 14,
-      name: "Device 6",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 15,
-      name: "Device 5",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 16,
-      name: "Device 6",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 17,
-      name: "Device 7",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 18,
-      name: "Device 8",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
-    {
-      id: 19,
-      name: "Device 9",
-      action: "Turn on",
-      time: new Date().toString(),
-    },
+  //   { id: 1, name: "Device 1", action: "Turn on", time: new Date().toString() },
+  //   { id: 2, name: "Device 2", action: "Turn on", time: new Date().toString() },
+  //   { id: 3, name: "Device 3", action: "Turn on", time: new Date().toString() },
+  //   { id: 4, name: "Device 4", action: "Turn on", time: new Date().toString() },
+  //   { id: 5, name: "Device 5", action: "Turn on", time: new Date().toString() },
+  //   { id: 6, name: "Device 6", action: "Turn on", time: new Date().toString() },
+  //   { id: 7, name: "Device 7", action: "Turn on", time: new Date().toString() },
+  //   { id: 8, name: "Device 8", action: "Turn on", time: new Date().toString() },
+  //   { id: 9, name: "Device 9", action: "Turn on", time: new Date().toString() },
+  //   {
+  //     id: 10,
+  //     name: "Device 6",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 11,
+  //     name: "Device 7",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 12,
+  //     name: "Device 8",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 13,
+  //     name: "Device 9",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 14,
+  //     name: "Device 6",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 15,
+  //     name: "Device 5",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 16,
+  //     name: "Device 6",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 17,
+  //     name: "Device 7",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 18,
+  //     name: "Device 8",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
+  //   {
+  //     id: 19,
+  //     name: "Device 9",
+  //     action: "Turn on",
+  //     time: new Date().toString(),
+  //   },
   ]);
+  const [totalPage, setTotalPage] = useState(0);
   const [searchModel, setSearchModel] = useState<SearchModel>({
     keyword: "",
     sortBy: "id",
-    sortOrder: "asc",
+    sortOrder: "desc",
     pageSize: 10,
     pageNumber: 1,
     timer: 0,
   });
+
+  useEffect(() => {
+    dispatch(showOrHideSpinner(true));
+    const fetchApi = async () => {
+      await DeviceHistoryService.getInstance()
+        .getDeviceHistory({
+          keyword: searchModel.keyword,
+          sortBy: searchModel.sortBy,
+          sortOrder: searchModel.sortOrder,
+          pageSize: searchModel.pageSize,
+          pageNumber: searchModel.pageNumber,
+        })
+        .then((response) => {
+          console.log(response);
+          if (response.data.httpCode === 200) {
+            setData(response.data.data);
+            setTotalPage(response.data.totalPages);
+            dispatch(showOrHideSpinner(false));
+          }
+        });
+    };
+    fetchApi();
+  }, [searchModel.timer]);
+
   const onClickBtnSearch = () => {
     setSearchModel({ ...searchModel, timer: Date.now() });
   };
@@ -107,6 +136,7 @@ export const History = () => {
   };
 
   const onClickNextPage = () => {
+    if(searchModel.pageNumber >= totalPage) return;
     setSearchModel((prev) => ({
       ...prev,
       pageNumber: prev.pageNumber + 1,
@@ -115,6 +145,7 @@ export const History = () => {
   };
 
   const onClickPrePage = () => {
+    if(searchModel.pageNumber <= 1) return;
     setSearchModel((prev) => ({
       ...prev,
       pageNumber: prev.pageNumber - 1,
@@ -190,8 +221,8 @@ export const History = () => {
                     {data.map((item) => (
                       <tr key={item.id}>
                         <td>{item.id}</td>
-                        <td>{item.name}</td>
-                        <td>{item.action}</td>
+                        <td>{translateDeviceName(item.name)}</td>
+                        <td>{item.action ? "Bật" : "Tắt"}</td>
                         <td>{formatDate(item.time)}</td>
                       </tr>
                     ))}
@@ -200,7 +231,7 @@ export const History = () => {
               </div>
               <Paging
                 pageNumber={searchModel.pageNumber}
-                totalPage={10}
+                totalPage={totalPage}
                 onClickNextPage={onClickNextPage}
                 onClickPrePage={onClickPrePage}
                 onChangePageSize={onChangePageSize}

@@ -2,13 +2,15 @@ import React from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import zoomPlugin from "chartjs-plugin-zoom";
+import { format } from "path";
+import { formatDate } from "../util/AppUtil";
 
 Chart.register(...registerables, zoomPlugin);
 
 export const LineChart = (props : any) => {
 
   const data = {
-    labels: props.sensorData.map((data:any) => data.time),
+    labels: props.sensorData.map((data:any) => formatDate(data.time)),
     datasets: [
       {
         label: "Nhiệt độ (°C)",
@@ -26,7 +28,7 @@ export const LineChart = (props : any) => {
       },
       {
         label: "Mức ánh sáng (lux)",
-        data: props.sensorData.map((data:any) => data.light_level),
+        data: props.sensorData.map((data:any) => data.lightLevel),
         borderColor: "orange",
         backgroundColor: "rgba(255, 206, 86, 0.2)",
         tension: 0.3,

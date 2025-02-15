@@ -1,6 +1,6 @@
 export type DeviceHistory = {
     id: number;
     name: string;
-    action: string;
+    action: boolean;
     time: string;
 };

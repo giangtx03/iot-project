@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -28,6 +29,11 @@ public class DeviceHistoryService {
         Page<DeviceHistory> deviceHistoryPage = deviceHistoryRepo.findAllDeviceHistory(modelSearch.getKeyword(), pageable);
 
         return deviceHistoryPage;
+    }
+
+    public List<DeviceHistory> getActionDevices(){
+
+        return deviceHistoryRepo.findActionDevicesDistinct();
     }
 
     public void createDeviceHistory(DeviceHistory deviceHistory) {

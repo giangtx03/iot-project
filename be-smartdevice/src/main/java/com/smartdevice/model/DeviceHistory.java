@@ -19,7 +19,7 @@ public class DeviceHistory {
     @Column
     private String name;
     @Column
-    private String action;
+    private boolean action;
     @Column
     private LocalDateTime time;
 }

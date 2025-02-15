@@ -57,9 +57,7 @@ export const Profile = () => {
             </div>
 
             <div className="mb-2 col-sm-6">
-              <label className="form-label fw-bold fs-5 ">
-                Email:
-              </label>
+              <label className="form-label fw-bold fs-5 ">Email:</label>
               <input
                 type="text"
                 className="form-control fs-5 border-0 border-bottom border-3 rounded-0"
@@ -69,9 +67,7 @@ export const Profile = () => {
             </div>
 
             <div className="mb-2 col-sm-6">
-              <label className="form-label fw-bold fs-5 ">
-                Số điện thoại:
-              </label>
+              <label className="form-label fw-bold fs-5 ">Số điện thoại:</label>
               <input
                 type="text"
                 className="form-control fs-5 border-0 border-bottom border-3 rounded-0"
@@ -90,12 +86,12 @@ export const Profile = () => {
               Link Github:
             </label>
             <div className="col-10">
-              <input
-                type="text"
-                className="form-control fs-5 border-0 border-bottom border-3 rounded-0"
-                value="Trương Xuân Giang"
-                readOnly
-              />
+              <a
+                href="https://github.com/giangtx03/iot-project"
+                className="form-control fs-5 border-0 border-bottom border-3 rounded-0 text-decoration-none"
+              >
+                https://github.com/giangtx03/iot-project
+              </a>
             </div>
           </div>
 
@@ -104,12 +100,12 @@ export const Profile = () => {
               Link báo cáo PDF:
             </label>
             <div className="col-10">
-              <input
-                type="text"
-                className="form-control fs-5 border-0 border-bottom border-3 rounded-0"
-                value="B21DCPT092"
-                readOnly
-              />
+              <a
+                href="https://github.com/giangtx03/iot-project"
+                className="form-control fs-5 border-0 border-bottom border-3 rounded-0 text-decoration-none"
+              >
+                https://github.com/giangtx03/iot-project
+              </a>
             </div>
           </div>
 
@@ -118,12 +114,12 @@ export const Profile = () => {
               Link API docs:
             </label>
             <div className="col-10">
-              <input
-                type="text"
-                className="form-control fs-5 border-0 border-bottom border-3 rounded-0"
-                value="B21DCPT092"
-                readOnly
-              />
+              <a
+                href="http://localhost:8080/swagger-ui/index.html"
+                className="form-control fs-5 border-0 border-bottom border-3 rounded-0 text-decoration-none"
+              >
+                http://localhost:8080/swagger-ui/index.html
+              </a>
             </div>
           </div>
         </form>

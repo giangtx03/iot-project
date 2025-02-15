@@ -10,7 +10,7 @@ export const SearchBox = (props: any) => {
           placeholder="Nhập nội dung..."
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              props.onClickBtn();
+              props.onClickBtnSearch();
             }
           }}
         />

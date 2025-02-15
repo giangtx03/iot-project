@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SearchBox } from "../comp/SearchBox";
 import { Paging } from "../comp/Paging";
 import { SensorData } from "../model/SensorData";
-import { formatDate } from "../util/DateTimeFormat";
+import { formatDate } from "../util/AppUtil";
 import { FaAngleDown, FaAngleUp  } from "react-icons/fa";
+import { useAppDispatch } from "../store/hooks";
+import { showOrHideSpinner } from "../reducer/SpinnerSlice";
+import { SensorDataService } from "../service/SensorDataService";
 
 type SearchModel = {
   keyword: string;
@@ -16,137 +19,161 @@ type SearchModel = {
 };
 
 export const Statistics = () => {
+  const dispatch = useAppDispatch();
   const [data, setData] = useState<SensorData[]>([
-    {
-      id: 1,
-      humidity: 50,
-      temperature: 30,
-      light_level: 100,
-      time: new Date().toString(),
-    },
-    {
-      id: 2,
-      humidity: 55,
-      temperature: 28,
-      light_level: 120,
-      time: new Date().toString(),
-    },
-    {
-      id: 3,
-      humidity: 60,
-      temperature: 32,
-      light_level: 90,
-      time: new Date().toString(),
-    },
-    {
-      id: 4,
-      humidity: 65,
-      temperature: 29,
-      light_level: 110,
-      time: new Date().toString(),
-    },
-    {
-      id: 5,
-      humidity: 70,
-      temperature: 31,
-      light_level: 95,
-      time: new Date().toString(),
-    },
-    {
-      id: 6,
-      humidity: 50,
-      temperature: 30,
-      light_level: 100,
-      time: new Date().toString(),
-    },
-    {
-      id: 7,
-      humidity: 55,
-      temperature: 28,
-      light_level: 120,
-      time: new Date().toString(),
-    },
-    {
-      id: 8,
-      humidity: 60,
-      temperature: 32,
-      light_level: 90,
-      time: new Date().toString(),
-    },
-    {
-      id: 9,
-      humidity: 65,
-      temperature: 29,
-      light_level: 110,
-      time: new Date().toString(),
-    },
-    {
-      id: 10,
-      humidity: 70,
-      temperature: 31,
-      light_level: 95,
-      time: new Date().toString(),
-    },
-    {
-      id: 11,
-      humidity: 50,
-      temperature: 30,
-      light_level: 100,
-      time: new Date().toString(),
-    },
-    {
-      id: 12,
-      humidity: 55,
-      temperature: 28,
-      light_level: 120,
-      time: new Date().toString(),
-    },
-    {
-      id: 13,
-      humidity: 60,
-      temperature: 32,
-      light_level: 90,
-      time: new Date().toString(),
-    },
-    {
-      id: 14,
-      humidity: 65,
-      temperature: 29,
-      light_level: 110,
-      time: new Date().toString(),
-    },
+    // {
+    //   id: 1,
+    //   humidity: 50,
+    //   temperature: 30,
+    //   light_level: 100,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 2,
+    //   humidity: 55,
+    //   temperature: 28,
+    //   light_level: 120,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 3,
+    //   humidity: 60,
+    //   temperature: 32,
+    //   light_level: 90,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 4,
+    //   humidity: 65,
+    //   temperature: 29,
+    //   light_level: 110,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 5,
+    //   humidity: 70,
+    //   temperature: 31,
+    //   light_level: 95,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 6,
+    //   humidity: 50,
+    //   temperature: 30,
+    //   light_level: 100,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 7,
+    //   humidity: 55,
+    //   temperature: 28,
+    //   light_level: 120,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 8,
+    //   humidity: 60,
+    //   temperature: 32,
+    //   light_level: 90,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 9,
+    //   humidity: 65,
+    //   temperature: 29,
+    //   light_level: 110,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 10,
+    //   humidity: 70,
+    //   temperature: 31,
+    //   light_level: 95,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 11,
+    //   humidity: 50,
+    //   temperature: 30,
+    //   light_level: 100,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 12,
+    //   humidity: 55,
+    //   temperature: 28,
+    //   light_level: 120,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 13,
+    //   humidity: 60,
+    //   temperature: 32,
+    //   light_level: 90,
+    //   time: new Date().toString(),
+    // },
+    // {
+    //   id: 14,
+    //   humidity: 65,
+    //   temperature: 29,
+    //   light_level: 110,
+    //   time: new Date().toString(),
+    // },
   ]);
+  const [totalPage, setTotalPage] = useState<number>(0);
   const [searchModel, setSearchModel] = useState<SearchModel>({
     keyword: "",
     sortBy: "id",
-    sortOrder: "asc",
+    sortOrder: "desc",
     type: "all",
     pageSize: 10,
     pageNumber: 1,
     timer: 0,
   });
 
+  useEffect(() => {
+    console.log(searchModel);
+      dispatch(showOrHideSpinner(true));
+      const fetchApi = async () => {
+        await SensorDataService.getInstance()
+          .getSensorData({
+            keyword: searchModel.keyword,
+            sortBy: searchModel.sortBy,
+            sortOrder: searchModel.sortOrder,
+            pageSize: searchModel.pageSize,
+            pageNumber: searchModel.pageNumber,
+            type: searchModel.type,
+          })
+          .then((response) => {
+            console.log(response);
+            if (response.data.httpCode === 200) {
+              setData(response.data.data);
+              setTotalPage(response.data.totalPages);
+              dispatch(showOrHideSpinner(false));
+            }
+          });
+      };
+      fetchApi();
+    }, [searchModel.timer]);
+
   const onChangeSearchInput = (e: any) => {
-    console.log(e.target.value);
     setSearchModel({ ...searchModel, keyword: e.target.value });
   };
 
   const onChangePageSize = (e: any) => {
     setSearchModel({ ...searchModel, pageSize: e.target.value, timer: Date.now() });
-    console.log(e.target.value)
   };
 
   const onChangeType = (e: any) => {
     setSearchModel({ ...searchModel, type: e.target.value, timer: Date.now() });
-    console.log(e.target.value)
   };
 
   const onClickBtnSearch = () => {
-    console.log("Click");
-    console.log(searchModel);
+    setSearchModel({ ...searchModel, timer: Date.now() });
   };
 
   const onClickNextPage = () => {
+    if(searchModel.pageNumber >= totalPage) return;
     setSearchModel((prev) => ({
       ...prev,
       pageNumber: prev.pageNumber + 1,
@@ -155,6 +182,7 @@ export const Statistics = () => {
   };
 
   const onClickPrePage = () => {
+    if(searchModel.pageNumber <= 1) return;
     setSearchModel((prev) => ({
       ...prev,
       pageNumber: prev.pageNumber - 1,
@@ -240,7 +268,7 @@ export const Statistics = () => {
                         <td>{item.id}</td>
                         <td>{item.humidity}</td>
                         <td>{item.temperature}</td>
-                        <td>{item.light_level}</td>
+                        <td>{item.lightLevel}</td>
                         <td>{formatDate(item.time)}</td>
                       </tr>
                     ))}
@@ -249,7 +277,7 @@ export const Statistics = () => {
               </div>
               <Paging
                 pageNumber={searchModel.pageNumber}
-                totalPage={10}
+                totalPage={totalPage}
                 onClickNextPage={onClickNextPage}
                 onClickPrePage={onClickPrePage}
                 onChangePageSize={onChangePageSize}
