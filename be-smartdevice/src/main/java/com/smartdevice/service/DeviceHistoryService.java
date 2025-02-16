@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeviceHistoryService {
     private final DeviceHistoryRepo deviceHistoryRepo;
+    private final MqttService mqttService;
 
     public Page<DeviceHistory> getAllDeviceHistory(ModelSearch modelSearch){
 
@@ -39,5 +40,6 @@ public class DeviceHistoryService {
     public void createDeviceHistory(DeviceHistory deviceHistory) {
         deviceHistory.setTime(LocalDateTime.now());
         deviceHistoryRepo.save(deviceHistory);
+        mqttService.sendMessage(String.format("device/%s", deviceHistory.getName()), deviceHistory.isAction());
     }
 }
