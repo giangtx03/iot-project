@@ -34,17 +34,4 @@ public class SensorDataController {
                 .build();
         return ResponseEntity.ok().body(response);
     }
-
-    @Operation(summary = "Tạo bản ghi dữ liệu thiết bị cảm biến theo schema SensorData",
-            description = "API không trả về giá trị")
-    @PostMapping
-    public ResponseEntity<?> createSensorData(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Thông tin dữ liệu cảm biến cần tạo gồm nhiệt độ, độ ẩm, ánh sáng",
-                    required = true
-            )
-            @RequestBody SensorData sensorData){
-        sensorDataService.createSensorData(sensorData);
-        return ResponseEntity.ok().build();
-    }
 }

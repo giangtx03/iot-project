@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Setter
 @Getter
+@ToString
 public class SensorData {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

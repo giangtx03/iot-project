@@ -1,6 +1,9 @@
 package com.smartdevice.config;
 
+import com.smartdevice.model.SensorData;
+import com.smartdevice.service.SensorDataService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +20,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 public class MqttConfig {
 
     private final SimpMessagingTemplate messagingTemplate;
+    private final SensorDataService sensorDataService;
 
     @Value("${mqtt.broker.url}")
     private String brokerUrl;
@@ -69,7 +74,10 @@ public class MqttConfig {
         return message -> {
             String topic = message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC, String.class);
             String payload = (String) message.getPayload();
-            System.out.println("Received from MQTT: " + topic + " -> " + payload);
+            log.info("Received from MQTT: {} -> {}",  topic , payload);
+
+            SensorData sensorData = sensorDataService.createSensorData(payload);
+            messagingTemplate.convertAndSend("/topic/sensor-data", sensorData);
         };
     }
 

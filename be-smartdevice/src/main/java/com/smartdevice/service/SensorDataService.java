@@ -4,6 +4,7 @@ import com.smartdevice.dto.ModelSearch;
 import com.smartdevice.model.SensorData;
 import com.smartdevice.repository.SensorDataRepo;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -28,8 +29,19 @@ public class SensorDataService {
         return sensorDataPage;
     }
 
-    public void createSensorData(SensorData sensorData) {
+    public SensorData createSensorData(String payload) {
+        SensorData sensorData = new SensorData();
+
+        try{
+            JSONObject json = new JSONObject(payload);
+            sensorData.setHumidity(json.getInt("humidity"));
+            sensorData.setTemperature(json.getInt("temperature"));
+            sensorData.setLightLevel(json.getInt("light_level"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         sensorData.setTime(LocalDateTime.now());
-        sensorDataRepo.save(sensorData);
+        System.out.println(sensorData.toString());
+        return  sensorDataRepo.save(sensorData);
     }
 }

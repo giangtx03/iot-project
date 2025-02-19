@@ -145,7 +145,7 @@ export const Statistics = () => {
             type: searchModel.type,
           })
           .then((response) => {
-            console.log(response);
+            // console.log(response);
             if (response.data.httpCode === 200) {
               setData(response.data.data);
               setTotalPage(response.data.totalPages);
