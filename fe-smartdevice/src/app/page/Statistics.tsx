@@ -161,7 +161,7 @@ export const Statistics = () => {
   };
 
   const onChangePageSize = (e: any) => {
-    setSearchModel({ ...searchModel, pageSize: e.target.value, timer: Date.now() });
+    setSearchModel({ ...searchModel, pageSize: e.target.value, pageNumber: 1, timer: Date.now() });
   };
 
   const onChangeType = (e: any) => {
@@ -169,7 +169,7 @@ export const Statistics = () => {
   };
 
   const onClickBtnSearch = () => {
-    setSearchModel({ ...searchModel, timer: Date.now() });
+    setSearchModel({ ...searchModel, pageNumber: 1, timer: Date.now() });
   };
 
   const onClickNextPage = () => {

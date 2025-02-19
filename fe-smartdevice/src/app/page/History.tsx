@@ -124,7 +124,7 @@ export const History = () => {
   }, [searchModel.timer]);
 
   const onClickBtnSearch = () => {
-    setSearchModel({ ...searchModel, timer: Date.now() });
+    setSearchModel({ ...searchModel,pageNumber: 1, timer: Date.now() });
   };
 
   const onChangeSearchInput = (e: any) => {
@@ -132,7 +132,7 @@ export const History = () => {
   };
 
   const onChangePageSize = (e: any) => {
-    setSearchModel({ ...searchModel, pageSize: e.target.value, timer: Date.now() });
+    setSearchModel({ ...searchModel, pageSize: e.target.value, pageNumber: 1, timer: Date.now() });
   };
 
   const onClickNextPage = () => {

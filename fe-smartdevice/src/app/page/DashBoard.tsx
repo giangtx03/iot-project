@@ -81,7 +81,7 @@ export const DashBoard = () => {
       const dataSensor: SensorData = JSON.parse(payload);
       setSensorDataPresent(dataSensor);
       setData((prev) => [...prev, dataSensor]);
-
+      console.log(JSON.stringify(dataSensor));
     });    
   },[])
 
