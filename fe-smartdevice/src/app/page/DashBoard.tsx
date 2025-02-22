@@ -11,6 +11,7 @@ import { showOrHideSpinner } from "../reducer/SpinnerSlice";
 import { DeviceHistoryService } from "../service/DeviceHistoryService";
 import { DeviceHistory } from "../model/DeviceHistory";
 import { WebSocketService } from "../service/WebSocketService";
+import { parseISOToArray } from "../util/AppUtil";
 
 export const DashBoard = () => {
   const dispatch = useAppDispatch();
@@ -57,14 +58,14 @@ export const DashBoard = () => {
         .getSensorData({
           keyword: "",
           sortBy: "id",
-          sortOrder: "asc",
+          sortOrder: "desc",
           pageSize: 24,
           pageNumber: 1,
           type: "all",
         })
         .then((response) => {
           if (response.data.httpCode === 200) {
-            setData(response.data.data);
+            setData(response.data.data.reverse());
             setSensorDataPresent(
               response.data.data[response.data.data.length - 1]
             );
@@ -81,7 +82,6 @@ export const DashBoard = () => {
       const dataSensor: SensorData = JSON.parse(payload);
       setSensorDataPresent(dataSensor);
       setData((prev) => [...prev, dataSensor]);
-      console.log(JSON.stringify(dataSensor));
     });    
   },[])
 

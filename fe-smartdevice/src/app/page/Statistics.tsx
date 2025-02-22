@@ -131,8 +131,8 @@ export const Statistics = () => {
     timer: 0,
   });
 
-  useEffect(() => {
-    console.log(searchModel);
+  useEffect(() => {   
+    // console.log(searchModel);
       dispatch(showOrHideSpinner(true));
       const fetchApi = async () => {
         await SensorDataService.getInstance()
