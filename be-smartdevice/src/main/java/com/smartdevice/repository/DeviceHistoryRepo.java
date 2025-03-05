@@ -12,12 +12,14 @@ import java.util.List;
 public interface DeviceHistoryRepo extends JpaRepository<DeviceHistory, Long> {
 
     @Query(nativeQuery = true, value = "SELECT * FROM device_history " +
-            "WHERE id LIKE CONCAT('%', :keyword, '%') " +
+            "WHERE :keyword IS NULL " +
+            "OR id LIKE CONCAT('%', :keyword, '%') " +
             "OR name LIKE CONCAT('%', :keyword, '%') " +
             "OR action LIKE CONCAT('%', :keyword, '%') " +
             "OR time LIKE CONCAT('%', :keyword, '%')",
             countQuery = "SELECT COUNT(*) FROM device_history " +
-                    "WHERE id LIKE CONCAT('%', :keyword, '%') " +
+                    "WHERE :keyword IS NULL " +
+                    "OR id LIKE CONCAT('%', :keyword, '%') " +
                     "OR name LIKE CONCAT('%', :keyword, '%') " +
                     "OR action LIKE CONCAT('%', :keyword, '%') " +
                     "OR time LIKE CONCAT('%', :keyword, '%')")
