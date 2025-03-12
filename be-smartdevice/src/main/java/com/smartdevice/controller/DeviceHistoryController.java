@@ -1,6 +1,7 @@
 package com.smartdevice.controller;
 
 import com.smartdevice.dto.BasePageResponse;
+import com.smartdevice.dto.DeviceHistoryDto;
 import com.smartdevice.dto.ModelSearch;
 import com.smartdevice.model.DeviceHistory;
 import com.smartdevice.service.DeviceHistoryService;
@@ -161,25 +162,60 @@ public class DeviceHistoryController {
     }
 
     @Operation(summary = "Tạo bản ghi lịch sử hoạt động thiết bị theo schema DeviceHistory",
-            description = "API không trả về giá trị")
+            description = "API trả về kết quả tạo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Thêm lịch sử hoạt động thành công",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Thành công",
+                                    value = """ 
+                                            {
+                                             "httpCode": 201,
+                                             "message": "Thêm thiết bị thành công!",
+                                             "data": {
+                                               "id": 702,
+                                               "name": "fan",
+                                               "action": true,
+                                               "time": [
+                                                 2025,
+                                                 3,
+                                                 12,
+                                                 16,
+                                                 20,
+                                                 6,
+                                                 581203700
+                                               ]
+                                             },
+                                             "totalPages": 0,
+                                             "totalItems": 0
+                                           }
+                                        """
+                            ))),
+            @ApiResponse(responseCode = "400", description = "Thêm lịch sử hoạt động thất bại",
+                    content = @Content(mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Thất bại",
+                                    value = """ 
+                                            {
+                                              "timestamp": 1741771324338,
+                                              "status": 400,
+                                              "error": "Bad Request",
+                                              "path": "/device-history"
+                                            }
+                                        """
+                            )))
+    })
     @PostMapping
     public ResponseEntity<?> createDeviceHistory(
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Thông tin lịch sử hoạt động thiết bị cần tạo gồm tên thiết bị, hoạt động",
-                    required = true,
-                    content = @Content(mediaType = "application/json",
-                    examples = @ExampleObject(
-                            name = "Tạo bản ghi lịch sử hoạt động thiết bị",
-                            value = """
-                                    {
-                                        "name": "quạt",
-                                        "action" : "off"
-                                    }
-                                    """
-                    ))
-            )
-            @RequestBody DeviceHistory deviceHistory){
-        deviceHistoryService.createDeviceHistory(deviceHistory);
-        return ResponseEntity.ok().build();
+            @ParameterObject DeviceHistoryDto deviceHistoryDto){
+        DeviceHistory deviceHistory = deviceHistoryService.createDeviceHistory(deviceHistoryDto);
+
+        BasePageResponse response = BasePageResponse.builder()
+                .httpCode(201)
+                .message("Thêm thiết bị thành công!")
+                .data(deviceHistory)
+                .build();
+        return ResponseEntity.ok()
+                .body(response);
     }
 }

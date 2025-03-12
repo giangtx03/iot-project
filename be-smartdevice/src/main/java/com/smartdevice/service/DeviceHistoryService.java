@@ -1,5 +1,6 @@
 package com.smartdevice.service;
 
+import com.smartdevice.dto.DeviceHistoryDto;
 import com.smartdevice.dto.ModelSearch;
 import com.smartdevice.model.DeviceHistory;
 import com.smartdevice.repository.DeviceHistoryRepo;
@@ -37,9 +38,15 @@ public class DeviceHistoryService {
         return deviceHistoryRepo.findActionDevicesDistinct();
     }
 
-    public void createDeviceHistory(DeviceHistory deviceHistory) {
-        deviceHistory.setTime(LocalDateTime.now());
+    public DeviceHistory createDeviceHistory(DeviceHistoryDto deviceHistoryDto) {
+        DeviceHistory deviceHistory = DeviceHistory.builder()
+                .name(deviceHistoryDto.getName())
+                .action(deviceHistoryDto.isAction())
+                .time(LocalDateTime.now())
+                .build();
+
         deviceHistoryRepo.save(deviceHistory);
         mqttService.sendMessage(String.format("device/%s", deviceHistory.getName()), deviceHistory.isAction());
+        return  deviceHistory;
     }
 }

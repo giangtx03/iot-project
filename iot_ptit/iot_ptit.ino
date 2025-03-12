@@ -6,10 +6,10 @@
 unsigned long previousMillis = 0;
 const long blinkInterval = 500;
 
-const char* ssid = "Hung 166";
-const char* password = "12345678";
-const char* mqtt_server = "192.168.1.12";
-const int mqtt_port = 1883;
+const char* ssid = "Oppo";
+const char* password = "giang123456";
+const char* mqtt_server = "172.20.10.2";
+const int mqtt_port = 1884;
 const char* mqtt_topic = "sensor/data";
 
 bool isWarning = false;
@@ -22,7 +22,6 @@ PubSubClient client(espClient);
 #define FAN_PIN 25
 #define BULB_PIN 26
 #define DEHUMIDIFIER_PIN 27
-// #define LAMP_PIN 32
 
 const char* mqtt_user = "giangtx";
 const char* mqtt_pass = "giang123";
@@ -61,7 +60,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if (strcmp(topic, "device/fan") == 0) digitalWrite(FAN_PIN, state);
   else if (strcmp(topic, "device/bulb") == 0) digitalWrite(BULB_PIN, state);
   else if (strcmp(topic, "device/dehumidifier") == 0) digitalWrite(DEHUMIDIFIER_PIN, state);
-  // else if (strcmp(topic, "device/lamp") == 0) digitalWrite(LAMP_PIN, state);
 }
 
 void reconnect() {
@@ -74,7 +72,6 @@ void reconnect() {
       client.subscribe("device/fan");
       client.subscribe("device/bulb");
       client.subscribe("device/dehumidifier");
-      // client.subscribe("device/lamp");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -91,7 +88,6 @@ void setup() {
   pinMode(FAN_PIN, OUTPUT);
   pinMode(BULB_PIN, OUTPUT);
   pinMode(DEHUMIDIFIER_PIN, OUTPUT);
-  // pinMode(LAMP_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);

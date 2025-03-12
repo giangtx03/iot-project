@@ -25,6 +25,8 @@ export class DeviceHistoryService {
     }
 
     public createDeviceHistory(deviceHistory: any) {
-      return axios.post(process.env.REACT_APP_API_URL + "/device-history", deviceHistory);
+      const params = ParamUtil.toRequestParams(deviceHistory);
+      const url = ApiUrlUtil.buildQueryString(process.env.REACT_APP_API_URL + "/device-history", params);
+      return axios.post(url);
     }
 }
