@@ -55,3 +55,12 @@ button.btn-action {
 button.btn-action.active{
   background-color: #0D6EFD;
 }
+
+@keyframes flash {
+  0%, 100% { background-color: #ff4d4d; }
+  50% { background-color: #ffffff; }
+}
+
+.flash-warning {
+  animation: flash 1s infinite;
+}

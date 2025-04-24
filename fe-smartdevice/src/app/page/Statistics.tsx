@@ -254,6 +254,16 @@ export const Statistics = () => {
                       >
                         Mức ánh sáng (lux) {searchModel.sortBy === "light_level" ? (searchModel.sortOrder === 'asc' ? <FaAngleUp /> : <FaAngleDown />)  : null}
                       </th>
+                      {/* <th
+                        className="cursor-pointer"
+                      >
+                        Độ bụi (mg/m3)
+                      </th> */}
+                      <th
+                        className="cursor-pointer"
+                      >
+                        Tốc độ gió (m/s)
+                      </th>
                       <th
                         onClick={() => handleSort("time")}
                         className="cursor-pointer"
@@ -269,6 +279,8 @@ export const Statistics = () => {
                         <td>{item.humidity}</td>
                         <td>{item.temperature}</td>
                         <td>{item.lightLevel}</td>
+                        {/* <td>{item.dust}</td> */}
+                        <td>{item.windSpeed}</td>
                         <td>{formatDate(item.time)}</td>
                       </tr>
                     ))}

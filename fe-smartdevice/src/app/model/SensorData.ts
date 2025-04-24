@@ -3,5 +3,6 @@ export type SensorData = {
     temperature : number;
     humidity : number;
     lightLevel: number;
+    windSpeed: number;
     time: string;
 };

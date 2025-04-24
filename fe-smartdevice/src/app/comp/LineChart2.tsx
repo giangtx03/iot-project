@@ -6,37 +6,23 @@ import { formatDate } from "../util/AppUtil";
 
 Chart.register(...registerables, zoomPlugin);
 
-export const LineChart = (props : any) => {
+export const LineChart2 = (props : any) => {
 
   const data = {
     labels: props.sensorData.map((data:any) => formatDate(data.time)),
     datasets: [
       {
-        label: "Nhiệt độ (°C)",
+        label: "Độ bụi (mg/m3)",
         data: props.sensorData.map((data:any) => data.temperature),
         borderColor: "red",
         backgroundColor: "rgba(255, 99, 132, 0.2)",
         tension: 0.3,
       },
       {
-        label: "Độ ẩm (%)",
+        label: "Tốc độ gió (m/s)",
         data: props.sensorData.map((data:any) => data.humidity),
         borderColor: "blue",
         backgroundColor: "rgba(54, 162, 235, 0.2)",
-        tension: 0.3,
-      },
-      {
-        label: "Mức ánh sáng (lux)",
-        data: props.sensorData.map((data:any) => data.lightLevel),
-        borderColor: "orange",
-        backgroundColor: "rgba(255, 206, 86, 0.2)",
-        tension: 0.3,
-      },
-      {
-        label: "Tốc độ gió (m/s)",
-        data: props.sensorData.map((data:any) => data.windSpeed),
-        borderColor: "green",
-        backgroundColor: "rgba(10, 224, 13, 0.2)",
         tension: 0.3,
       },
     ],
