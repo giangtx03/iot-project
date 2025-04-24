@@ -5,6 +5,7 @@ import com.smartdevice.service.SensorDataService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -63,7 +64,7 @@ public class MqttConfig {
     @Bean
     public MessageProducer inbound() {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(clientId + "sub", mqttClientFactory(), topic);
+                new MqttPahoMessageDrivenChannelAdapter(clientId + "sub", mqttClientFactory(), topic,  "device/status/#");
         adapter.setOutputChannel(mqttInputChannel());
         return adapter;
     }
@@ -76,8 +77,16 @@ public class MqttConfig {
             String payload = (String) message.getPayload();
             log.info("Received from MQTT: {} -> {}",  topic , payload);
 
-            SensorData sensorData = sensorDataService.createSensorData(payload);
-            messagingTemplate.convertAndSend("/topic/sensor-data", sensorData);
+            if (topic.contains("device/status")) {
+                JSONObject json = new JSONObject(payload);
+
+                messagingTemplate.convertAndSend("/topic/device-status", json.toString());
+            } else if (topic.contains("sensor/data")) {
+                SensorData sensorData = sensorDataService.createSensorData(payload);
+                messagingTemplate.convertAndSend("/topic/sensor-data", sensorData);
+            } else {
+                log.warn("Unknown topic: {}", topic);
+            }
         };
     }
 

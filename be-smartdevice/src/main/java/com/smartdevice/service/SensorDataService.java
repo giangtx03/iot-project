@@ -37,6 +37,8 @@ public class SensorDataService {
             sensorData.setHumidity(json.getInt("humidity"));
             sensorData.setTemperature(json.getInt("temperature"));
             sensorData.setLightLevel(json.getInt("light_level"));
+//            sensorData.setDust(json.getInt("dust"));
+            sensorData.setWindSpeed(json.getInt("wind_speed"));
         }catch (Exception e){
             e.printStackTrace();
         }

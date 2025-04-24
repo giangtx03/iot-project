@@ -23,6 +23,8 @@ public class SensorData {
     private int humidity;
     @Column(name = "light_level")
     private int lightLevel;
+    @Column(name = "wind_speed")
+    private int windSpeed;
     @Column
     private LocalDateTime time;
 }
