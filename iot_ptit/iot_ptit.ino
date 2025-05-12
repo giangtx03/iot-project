@@ -6,9 +6,9 @@
 unsigned long previousMillis = 0;
 const long blinkInterval = 500;
 
-const char* ssid = "Oppo";
-const char* password = "giang123456";
-const char* mqtt_server = "172.20.10.2";
+const char* ssid = "PTIT WIFI";
+const char* password = "bachxuantran";
+const char* mqtt_server = "172.20.10.3";
 const int mqtt_port = 1884;
 const char* mqtt_topic = "sensor/data";
 
@@ -22,6 +22,7 @@ PubSubClient client(espClient);
 #define FAN_PIN 25
 #define BULB_PIN 26
 #define DEHUMIDIFIER_PIN 27
+#define WARNING_PIN 32
 
 const char* mqtt_user = "giangtx";
 const char* mqtt_pass = "giang123";
@@ -57,9 +58,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
   Serial.println(message);
 
   bool state = (message == "true");
-  if (strcmp(topic, "device/fan") == 0) digitalWrite(FAN_PIN, state);
-  else if (strcmp(topic, "device/bulb") == 0) digitalWrite(BULB_PIN, state);
-  else if (strcmp(topic, "device/dehumidifier") == 0) digitalWrite(DEHUMIDIFIER_PIN, state);
+  String deviceName = "";
+  if (strcmp(topic, "device/fan") == 0) {
+    digitalWrite(FAN_PIN, state);
+    deviceName = "fan";
+  }
+  else if (strcmp(topic, "device/bulb") == 0) {
+    digitalWrite(BULB_PIN, state);
+    deviceName = "bulb";
+  }
+  else if (strcmp(topic, "device/dehumidifier") == 0) {
+    digitalWrite(DEHUMIDIFIER_PIN, state);
+    deviceName = "dehumidifier";
+  }
+  String topicName = "device/status/" + deviceName;
+  String json = "{\"device\":\"" + deviceName + "\",\"status\":" + (state ? "true" : "false") + "}";
+
+  client.publish(topicName.c_str(), json.c_str());
 }
 
 void reconnect() {
@@ -88,6 +103,7 @@ void setup() {
   pinMode(FAN_PIN, OUTPUT);
   pinMode(BULB_PIN, OUTPUT);
   pinMode(DEHUMIDIFIER_PIN, OUTPUT);
+  pinMode(WARNING_PIN, OUTPUT);
   setup_wifi();
   client.setServer(mqtt_server, mqtt_port);
   client.setCallback(callback);
@@ -100,9 +116,24 @@ void loop() {
   int humidity = round(dht.readHumidity());
   int temperature = round(dht.readTemperature());
   int light = ceil(analogRead(QUANG_TRO_PIN) / 4) + 1;
+  int windSpeed = random(0, 91);
 
-  String payload = "{\"temperature\": " + String(temperature) + ", \"humidity\": " + String(humidity) +
-                    ", \"light_level\": " + String(light)  +  "}";
+  String payload = "{";
+      payload += "\"temperature\": " + String(temperature) + ",";
+      payload += "\"humidity\": " + String(humidity) + ",";
+      payload += "\"light_level\": " + String(light) + ",";
+      payload += "\"wind_speed\": " + String(windSpeed) + ",";
+      payload += "}";
   client.publish(mqtt_topic, payload.c_str());
-  delay(2000);
+  if (windSpeed > 50) {
+    for(int i = 0; i < 20; i++) { 
+      digitalWrite(WARNING_PIN, HIGH);
+      delay(100);
+      digitalWrite(WARNING_PIN, LOW);
+      delay(100);
+    }
+  } else {
+    digitalWrite(WARNING_PIN, LOW);
+    delay(2000);
+  }
 }

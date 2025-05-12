@@ -13,8 +13,10 @@ import { showOrHideSpinner } from "../reducer/SpinnerSlice";
 import { DeviceHistoryService } from "../service/DeviceHistoryService";
 import { DeviceHistory } from "../model/DeviceHistory";
 import { WebSocketService } from "../service/WebSocketService";
-import { parseISOToArray } from "../util/AppUtil";
-import { LineChart2 } from "../comp/LineChart2";
+
+import fanOn from "../../asset/image/icon-quatviet-net.jpg";
+import lightOn from "../../asset/image/den-bat.jpg";
+import hudOn from "../../asset/image/fanOn.png";
 
 export const DashBoard = () => {
   const dispatch = useAppDispatch();
@@ -102,7 +104,6 @@ export const DashBoard = () => {
   
     dispatch(showOrHideSpinner(true));
     
-    
     DeviceHistoryService.getInstance()
     .createDeviceHistory({
       name: device,
@@ -158,7 +159,9 @@ export const DashBoard = () => {
           <p className="fs-1">{sensorDataPresent.dust}</p>
         </div> */}
 
-        <div className="col light-box rounded pt-2 px-2 mx-2 d-flex flex-column align-items-center">
+        <div className= {`col light-box rounded pt-2 px-2 mx-2 d-flex flex-column align-items-center ${
+                sensorDataPresent.windSpeed > 60 ? "flash-warning" : ""
+              }`}>
           <div className="d-flex gap-2 justify-content-center align-items-center">
             <p className="py-3 m-0 fs-3">Tốc độ gió {"(m/s)"}</p>
           </div>
@@ -196,7 +199,7 @@ export const DashBoard = () => {
             style={{ height: "100vh", overflow: "hidden" }}
           >
             <div className="d-flex align-items-center">
-              <img src={fan} alt="Fan Icon" />
+              <img style={{width:"100px", height:"100px"}} src={!devices.fan ? fan : fanOn} alt="Fan Icon" />
               <button
                 onClick={() => handleDeviceToggle("fan")}
                 className={devices.fan ? "btn-action mt-2" : "active btn-action mt-2"}
@@ -208,7 +211,7 @@ export const DashBoard = () => {
             <hr style={{ width: "100%" }} className="ms-2 border border-3 border-white" />
 
             <div className="d-flex align-items-center">
-              <img src={light} alt="Light Icon" />
+              <img style={{width:"100px", height:"100px"}} src={!devices.bulb ? light : lightOn} alt="Light Icon" />
               <button
                 onClick={() => handleDeviceToggle("bulb")}
                 className={devices.bulb ? "btn-action mt-2" : "active btn-action mt-2"}
@@ -220,7 +223,7 @@ export const DashBoard = () => {
             <hr style={{ width: "100%" }} className="ms-2 border border-3 border-white" />
 
             <div className="d-flex align-items-center">
-              <img src={hud} alt="Humidity Icon" />
+              <img style={{width:"100px", height:"100px"}} src={!devices.dehumidifier ? hud : hudOn} alt="Humidity Icon" />
               <button
                 onClick={() => handleDeviceToggle("dehumidifier")}
                 className={
